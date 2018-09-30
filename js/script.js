@@ -1,26 +1,56 @@
 'use strict';
 (function(){ 
+
+//variables
 var output = document.getElementById('output');
 var result = document.getElementById('result');
-
+var resultMessage = document.getElementById('result-message');
 var Paper = document.getElementById('paper');
 var Rock = document.getElementById('rock');
 var Scissors = document.getElementById('scissors');
 var NewGame = document.getElementById('new-game');
-
 var playerPick;
 var computerChoice;
 var computerPick;
-var playerPoints;
-var computerPoints;
-var roundCount;
-var newGame;
+var winner;
 var continueGame;
+
+var params = {
+	playerPoints: 0,
+	computerPoints: 0,
+	roundCount: 0,
+	newGame: 0,
+	progress: [],
+}
 
 Paper.style.visibility='hidden';
 Rock.style.visibility='hidden';
 Scissors.style.visibility='hidden';
 
+//Modal
+  function showModal(){
+		document.querySelector('#modal-overlay').classList.add('show');
+	};	
+  
+  var hideModal = function(){
+		document.querySelector('#modal-overlay').classList.remove('show');
+	};
+	
+	var closeButtons = document.querySelectorAll('.modal .close');
+	
+	for(var i = 0; i < closeButtons.length; i++){
+		closeButtons[i].addEventListener('click', hideModal);
+	}
+  
+  document.querySelector('#modal-overlay').addEventListener('click', hideModal);
+  	var modals = document.querySelectorAll('.modal');
+	
+	for(var i = 0; i < modals.length; i++){
+		modals[i].addEventListener('click', function(event){
+			event.stopPropagation();
+		})};
+
+//show, hide buttons 
 function showButtons(){
      Paper.style.visibility='visible';
      Rock.style.visibility='visible';
@@ -34,15 +64,17 @@ function hideButtons(){
 
 //New game
 NewGame.addEventListener('click', function(){	
-    newGame = window.prompt('How many rounds do you want to play?');
+    params.newGame = window.prompt('How many rounds do you want to play?');
     writeText('') ;
-    writeResult('');  
-    playerPoints = "0";
-    computerPoints = "0";
-    roundCount = "0";
+    writeResult('');
+    params.progress = [];
+    params.playerPoints = 0;
+    params.computerPoints = 0;
+    params.roundCount = 0;
     continueGame = true;
   
-    if (newGame === '' || isNaN(newGame) || newGame == null || newGame.trim().length == 0) {
+  
+    if (params.newGame === '' || isNaN(params.newGame) || params.newGame == null || params.newGame.trim().length == 0) {
       writeText('NO INPUT, TRY AGAIN!');
       hideButtons();
     }
@@ -68,59 +100,90 @@ function writeResult(text) {
 //Checking result
 function playerMove(playerPick){
     computerPick = computerMove();
-    roundCount++;
-
+    params.roundCount++;
+    winner = 'DRAW';
 //compare choices, return result
                 if(playerPick == computerPick){
-                    writeText("<br>You have to win "+newGame+" rounds<br><br>"+"ROUNDS TOTAL: " +roundCount+ "<br><br>" + "IT'S TIE: you played " + playerPick + ", computer played " + computerPick);
-                    writeResult('PLAYER '+playerPoints+' : '+computerPoints +' COMPUTER<br>');
+                    writeText("<br>You have to win "+params.newGame+" rounds<br><br>"+"ROUNDS TOTAL: " +params.roundCount+ "<br><br>" + "IT'S TIE: you played " + playerPick + ", computer played " + computerPick);
+                    writeResult('PLAYER '+params.playerPoints+' : '+params.computerPoints +' COMPUTER<br>');
                 } 
                 else if((playerPick == 'ROCK' && computerPick == 'PAPER') || (playerPick == 'SCISSORS' && computerPick == 'ROCK') || (playerPick == 'PAPER' && computerPick == 'SCISSORS')){
-                    computerPoints++;
-                    writeText("<br>You have to win "+newGame+" rounds<br><br>"+"ROUNDS TOTAL: " +roundCount+ "<br><br>" + "COMPUTER WON: you played " + playerPick + ", computer played " + computerPick);
-                    writeResult('PLAYER '+playerPoints+' : '+computerPoints +' COMPUTER<br>');
+                    params.computerPoints++;
+                    winner = 'COMPUTER';
+                    writeText("<br>You have to win "+params.newGame+" rounds<br><br>"+"ROUNDS TOTAL: " +params.roundCount+ "<br><br>" + "COMPUTER WON: you played " + playerPick + ", computer played " + computerPick);
+                    writeResult('PLAYER '+params.playerPoints+' : '+params.computerPoints +' COMPUTER<br>');
                 }
                 else{
-                    playerPoints++;
-                    writeText("<br>You have to win "+newGame+" rounds<br><br>"+"ROUNDS TOTAL: " +roundCount+ "<br><br>" + "YOU WON: you played " + playerPick + ", computer played " + computerPick);
-                    writeResult('PLAYER '+playerPoints+' : '+computerPoints +' COMPUTER<br>');
+                    params.playerPoints++;
+                    winner = 'PLAYER';
+                    writeText("<br>You have to win "+params.newGame+" rounds<br><br>"+"ROUNDS TOTAL: " +params.roundCount+ "<br><br>" + "YOU WON: you played " + playerPick + ", computer played " + computerPick);
+                    writeResult('PLAYER '+params.playerPoints+' : '+params.computerPoints +' COMPUTER<br>');
                 }
   
-                if(playerPoints == newGame){
+                if(params.playerPoints == params.newGame){
                     continueGame = false;
-                    result.insertAdjacentHTML('beforeEnd', "<br><b>YOU WON THE ENTIRE GAME!!!</b>")
+                    showModal();
+                    var data = [
+                          {
+                              info: '<br>YOU WON THE ENTIRE GAME!!!<br>',
+                              result: '<br>PLAYER '+params.playerPoints+' : '+params.computerPoints +' COMPUTER<br>',
+
+                          }]
                 }
-                else if(computerPoints == newGame){
+                else if(params.computerPoints == params.newGame){
                     continueGame = false;
-                    result.insertAdjacentHTML('beforeEnd', "<br><b>COMPUTER WON THE ENTIRE GAME!!!<b>")
-                }   
+                    showModal();
+
+                    var data = [
+                              {
+                              info: '<br>COMPUTER WON THE ENTIRE GAME!!!<br>',
+                              result: '<br>PLAYER '+params.playerPoints+' : '+params.computerPoints +' COMPUTER<br>',
+                              }]
+                }; 
+  
+// Table
+    function createTable(){
+       var table = document.getElementById('table');
+       table.innerHTML = '';
+       for(var i = 0; i < params.progress.length; i++) {
+         var tr = document.createElement('tr');
+       for(var key in params.progress[i]){
+           var td = document.createElement('td');
+           var text = document.createTextNode(params.progress[i][key]);       
+           td.appendChild(text);
+           tr.appendChild(td);
+            }
+           table.appendChild(tr);
+       }    
+     };
+
+    params.progress.push({
+       round: params.roundCount, 
+       player: playerPick,
+       computer: computerPick, 
+       playerScore: winner,   
+       computerScore: params.playerPoints+ ':' +params.computerPoints,
+    });
+  
+//Modal's message  
+    for (var i = 0, boxes = data.length; i < boxes; i++) {
+        var info = data[i].info;
+        var result = data[i].result;
+        resultMessage.insertAdjacentHTML('beforeEnd', info);
+        resultMessage.insertAdjacentHTML('beforeEnd', result);
+        createTable()
+    }
 }
 
-//Buttons
-Paper.addEventListener('click', function(){	
-        if(continueGame == false){
-            result.insertAdjacentHTML('beforeEnd', "<br>Game over, please press the new game button!")
-        }
-        else if (continueGame == true){
-            playerMove('PAPER');
-        }
-})
-
-Rock.addEventListener('click', function(){	
-        if(continueGame == false){
-            result.insertAdjacentHTML('beforeEnd', "<br>Game over, please press the new game button!")
-        }
-        else if (continueGame == true){
-            playerMove('ROCK');
-        }
-})
-
-Scissors.addEventListener('click', function(){	
-        if(continueGame == false){
-            result.insertAdjacentHTML('beforeEnd', "<br>Game over, please press the new game button!")
-        }
-        else if (continueGame == true){
-            playerMove('SCISSORS');
-        }
-})
-})(); 
+// Click button  
+var Buttons = document.querySelectorAll('.player-move');
+for( var i = 0; i < Buttons.length; i++ ){			
+  Buttons[i].addEventListener('click', function(event){
+            if(continueGame == false){
+              result.insertAdjacentHTML('beforeEnd', "<br>Game over, please press the new game button!")
+            }
+            else if (continueGame == true){
+              playerMove(this.getAttribute('data-move'));
+            }
+  })};    
+})();

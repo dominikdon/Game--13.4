@@ -9,11 +9,33 @@
 <body>
     <div>
         <button id="new-game">New Game</button><br><br><br>
-        <button id="paper">Paper</button>
-        <button id="rock">Rock</button>
-        <button id="scissors">Scissors</button>
+        <button id="paper" data-move="PAPER" class="player-move">Paper</button>
+        <button id="rock" data-move="ROCK" class="player-move">Rock</button>
+        <button id="scissors" data-move="SCISSORS" class="player-move">Scissors</button>
         <div id="output"></div>
         <div id="result"></div>
+    </div>
+
+    <div class="overlay" id="modal-overlay">
+	    <div class="modal">
+		    <a href="#" class="close">x</a>
+		    <header>Results</header>
+		    <div class="content" id="result-message">
+		    </div>
+         <table>
+              <thead>
+                <tr>
+                  <th>Round No.</th>
+                  <th>Player Move</th>
+                  <th>Computer Move</th>
+                  <th>Round winner</th>
+                  <th>Result</th>
+                </tr>
+              </thead>
+              <tbody id="table"> 
+              </tbody>
+            </table>  
+	    </div>
     </div>
 <script type="text/javascript" src="js/script.js"></script>
 </body>
