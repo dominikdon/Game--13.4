@@ -1,3 +1,5 @@
+::-webkit-scrollbar { width: 0px; background: transparent; }
+
 body { padding: 10px; text-align: center; }
 
 button { display: inline-block; padding: 11px 50px; max-width: 100%; font-size: 16px; font-weight: 600; text-align: center; white-space: nowrap; vertical-align: middle; color: #fff; background-color: darkgrey; border: 2px solid #02ac46; border-radius: 4px; transition: color .3s, background-color .3s; cursor: pointer; text-decoration: none; }
@@ -8,7 +10,7 @@ button:hover, button:active { color: #02ac46; background-color: #fff; }
 
 .overlay.show { display: block; }
 
-.modal { background: #fff; width: 500px; position: absolute; top: 50%; left: 50%; transform: translate3d(-50%, -50%, 0); }
+.modal { background: #fff; width: 540px; height: 500px; position: absolute; top: 50%; left: 50%; transform: translate3d(-50%, -50%, 0); }
 
 .modal .close { position: absolute; right: -2px; top: -7px; padding: 3px; color: #000; text-decoration: none; }
 
@@ -16,10 +18,20 @@ button:hover, button:active { color: #02ac46; background-color: #fff; }
 
 .modal .content { min-height: 30px; padding: 5px 30px; }
 
-table { border-collapse: collapse; margin: 15px; font-size: 15px; background: lightgrey; }
+.fixed_header { width: 500px; table-layout: fixed; border-collapse: collapse; margin: 20px; }
 
-table thead { font-weight: bold; }
+.fixed_header tbody { display: block; width: 100%; overflow-y: scroll; height: 300px; }
 
-table thead th { padding: 15px; border: 1px solid; background: grey; }
+.fixed_header thead tr { display: block; width: 500px; background: grey; }
 
-table tbody tr td { border: 1px solid; padding: 5px; }
+.fixed_header th, .fixed_header td { padding: 5px; width: 100px; border: 1px solid; }
+
+.fixed_header td:nth-child(1), .fixed_header th:nth-child(1) { min-width: 60px; }
+
+.fixed_header td:nth-child(2), .fixed_header th:nth-child(2) { min-width: 90px; }
+
+.fixed_header td:nth-child(3), .fixed_header th:nth-child(3) { min-width: 90px; }
+
+.fixed_header td:nth-child(4), .fixed_header th:nth-child(4) { min-width: 90px; }
+
+.fixed_header td:nth-child(5), .fixed_header th:nth-child(5) { min-width: 60px; }

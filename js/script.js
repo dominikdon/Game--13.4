@@ -1,6 +1,5 @@
 'use strict';
 (function(){ 
-
 //variables
 var output = document.getElementById('output');
 var result = document.getElementById('result');
@@ -14,7 +13,9 @@ var computerChoice;
 var computerPick;
 var winner;
 var continueGame;
-
+var info;
+var result;
+var data = 0;
 var params = {
 	playerPoints: 0,
 	computerPoints: 0,
@@ -67,12 +68,12 @@ NewGame.addEventListener('click', function(){
     params.newGame = window.prompt('How many rounds do you want to play?');
     writeText('') ;
     writeResult('');
+    resultMessage.innerHTML = ""
     params.progress = [];
     params.playerPoints = 0;
     params.computerPoints = 0;
     params.roundCount = 0;
     continueGame = true;
-  
   
     if (params.newGame === '' || isNaN(params.newGame) || params.newGame == null || params.newGame.trim().length == 0) {
       writeText('NO INPUT, TRY AGAIN!');
@@ -122,23 +123,22 @@ function playerMove(playerPick){
   
                 if(params.playerPoints == params.newGame){
                     continueGame = false;
-                    showModal();
-                    var data = [
+                    var scoreInfo = [
                           {
                               info: '<br>YOU WON THE ENTIRE GAME!!!<br>',
                               result: '<br>PLAYER '+params.playerPoints+' : '+params.computerPoints +' COMPUTER<br>',
 
                           }]
+                    showModal();
                 }
                 else if(params.computerPoints == params.newGame){
                     continueGame = false;
-                    showModal();
-
-                    var data = [
+                    var scoreInfo = [
                               {
                               info: '<br>COMPUTER WON THE ENTIRE GAME!!!<br>',
                               result: '<br>PLAYER '+params.playerPoints+' : '+params.computerPoints +' COMPUTER<br>',
                               }]
+                    showModal();
                 }; 
   
 // Table
@@ -166,13 +166,13 @@ function playerMove(playerPick){
     });
   
 //Modal's message  
-    for (var i = 0, boxes = data.length; i < boxes; i++) {
-        var info = data[i].info;
-        var result = data[i].result;
-        resultMessage.insertAdjacentHTML('beforeEnd', info);
-        resultMessage.insertAdjacentHTML('beforeEnd', result);
-        createTable()
-    }
+     for (var i = 0, boxes = scoreInfo.length; i < boxes; i++) {
+        var whoWin = scoreInfo[i].info;
+        var score = scoreInfo[i].result;
+        resultMessage.insertAdjacentHTML('beforeEnd', whoWin);
+        resultMessage.insertAdjacentHTML('beforeEnd', score);
+        createTable()  
+     }
 }
 
 // Click button  
